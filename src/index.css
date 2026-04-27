@@ -174,3 +174,24 @@ label {
 .w-full { width: 100%; }
 .h-full { height: 100%; }
 .min-h-screen { min-height: 100vh; }
+
+@media print {
+  .hide-on-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+  }
+  
+  /* Hide navigation and other layout elements */
+  nav, header, aside {
+    display: none !important;
+  }
+}

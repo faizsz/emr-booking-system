@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
-import { Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, Printer } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const PatientHistory = () => {
@@ -64,6 +64,15 @@ export const PatientHistory = () => {
                   <span style={{ display: 'block', color: 'var(--neutral-500)', fontSize: '0.75rem' }}>No. Antrean</span>
                   <span className="font-bold text-primary" style={{ fontSize: '1.25rem' }}>{apt.queue_number}</span>
                 </div>
+              </div>
+
+              <div className="mt-4 hide-on-print">
+                <button 
+                  onClick={() => window.print()} 
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.5rem', background: 'var(--primary-50)', color: 'var(--primary-700)', borderRadius: 'var(--radius-md)', border: '1px solid var(--primary-200)', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}
+                >
+                  <Printer size={16} /> Cetak Struk Antrean
+                </button>
               </div>
             </motion.div>
           ))}
