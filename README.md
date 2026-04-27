@@ -1,73 +1,78 @@
-# React + TypeScript + Vite
+# KlinikKu - Electronic Medical Record (EMR) & Booking System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+KlinikKu is a comprehensive web-based application built for managing clinic operations, patient appointments, and electronic medical records (EMR). The system is designed to bridge the interaction between patients and medical staff (Tenaga Kesehatan / Nakes), streamlining the healthcare workflow from booking an appointment to inputting medical records.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend**: React 19, TypeScript, Vite
+- **Styling & UI**: CSS, `clsx`, `tailwind-merge`, Framer Motion (for animations), Lucide React (for icons)
+- **Routing**: React Router DOM
+- **Backend & Database**: Supabase (PostgreSQL, Authentication, Row Level Security)
+- **Deployment**: Configured for Vercel (via `vercel.json`)
 
-## React Compiler
+## 👥 User Roles & Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The application utilizes Supabase Authentication and custom profiles to separate access into two main roles:
 
-## Expanding the ESLint configuration
+### 1. Patient (Pasien)
+Patients can create an account and manage their healthcare needs.
+- **Dashboard**: Overview of their health status and upcoming appointments.
+- **Book Appointment**: Book a queue number for a specific polyclinic and doctor on a selected date. The queue number is automatically generated.
+- **History**: View past and upcoming appointment statuses (waiting, completed, cancelled).
+- **My EMR**: Access their own Electronic Medical Records, containing doctors' diagnoses, actions taken, and prescribed medicines.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 2. Medical Staff (Nakes)
+Medical staff possess elevated privileges to manage clinic operations.
+- **Nakes Dashboard**: Overview of clinic statistics and activities.
+- **Patient Management**: View all registered patients and appointments across polyclinics.
+- **Input EMR**: Update appointment statuses (e.g., from 'waiting' to 'completed') and input patient medical records, including diagnosis, actions, and medicines after a consultation.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🗄️ Database Schema & Security
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+The project relies heavily on **Supabase PostgreSQL** and **Row Level Security (RLS)** to ensure data privacy:
+- `profiles`: Stores user data, linked securely to Supabase Auth (`auth.users`).
+- `polyclinics` & `doctors`: Master data for available healthcare services.
+- `appointments`: Stores booking data with a built-in PostgreSQL trigger `generate_queue_number()` to auto-assign queue numbers per polyclinic per day.
+- `medical_records`: Strictly confidential records. Patients can only view their own; Nakes can view all and create new ones.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Getting Started (Local Development)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Prerequisites
+- Node.js (v18 or higher)
+- A Supabase Project
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Installation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repo-url>
+   cd EMR
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup:**
+   Create a `.env` file in the root directory and add your Supabase credentials:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_project_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. **Database Setup:**
+   Copy the contents of `supabase_schema.sql` and run it in your Supabase SQL Editor to create the necessary tables, types, policies, and triggers.
+   After that, you can run the `seed.mjs` script if you want to populate the database with initial mock data.
+
+5. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open the App:**
+   Visit `http://localhost:5173` in your browser.
+
+## 📦 Deployment
+
+The project contains a `vercel.json` file which configures URL rewrites to support React Router's client-side routing on **Vercel**. When deploying, simply import the repository to Vercel and input your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` into the Vercel Environment Variables settings.
